@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using eDrugs.DbAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace eDrugs
 {
@@ -22,6 +24,9 @@ namespace eDrugs
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContextPool<ApplicationDbContext>( builder => 
+                builder.UseSqlServer(Configuration.GetConnectionString("EDrugsDB")));
+
             services.AddControllersWithViews();
         }
 
