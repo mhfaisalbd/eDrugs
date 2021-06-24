@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using eDrugs.DbAccess;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace eDrugs
@@ -26,6 +27,17 @@ namespace eDrugs
         {
             services.AddDbContextPool<ApplicationDbContext>( builder => 
                 builder.UseSqlServer(Configuration.GetConnectionString("EDrugsDB")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.User.RequireUniqueEmail = true;
+            }
+                
+            ).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllersWithViews();
         }
