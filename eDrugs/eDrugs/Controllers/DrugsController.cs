@@ -116,6 +116,38 @@ namespace eDrugs.Controllers
             }
             return View(drug);
         }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditV2(Guid id, [Bind("Id,BatchNo,GenericName,BusinessName")] Drug drug)
+        {
+            if (id != drug.Id)
+            {
+                return NoContent();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(drug);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!DrugExists(drug.Id))
+                    {
+                        return NoContent();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return NoContent();
+            }
+            return NoContent();
+        }
 
         // GET: Drugs/Delete/5
         public async Task<IActionResult> Delete(Guid? id)

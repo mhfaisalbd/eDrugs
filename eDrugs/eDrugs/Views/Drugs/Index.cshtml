@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Drug>
+﻿@model IList<Drug>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,20 +13,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.BatchNo)
+                BatchNo
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GenericName)
+                GenericName
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BusinessName)
+               BusinessName
             </th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
+</table>
+
+@for(var i = 0; i < Model.Count(); i ++)
+{
+    @*<tr>
             <td>
                 @Html.DisplayFor(modelItem => item.BatchNo)
             </td>
@@ -41,7 +43,57 @@
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
-        </tr>
+        </tr>*@
+    
+        var updateDiv = $"updateDiv_{Model[i].Id}";
+    
+    
+
+    <div id="@updateDiv">
+        <!-- ajax content will load here -->
+        <!-- you can put the form inside this div -->
+        <!-- so after submit the result will replace the form controls -->
+        <form class="form-inline"  method="post" asp-action="EditV2"
+              data-ajax="true"
+              data-ajax-method="post"
+              data-ajax-loading="#loading"
+              data-ajax-mode="replace"
+              data-ajax-update="#@updateDiv"
+              data-ajax-success="Success" data-ajax-failure="Failure" >
+
+            <!-- form controls -->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="Id" value="@Model[i].Id" hidden=""/>
+            <div class="form-group col-md-3">
+                <input name="BatchNo" value="@Model[i].BatchNo" class="form-control" readonly=""/>
+            </div>
+            <div class="form-group col-md-3">
+                <input name="GenericName" value="@Model[i].GenericName" class="form-control"/>
+            </div>
+            <div class="form-group col-md-3">
+                <input name="BusinessName" value="@Model[i].BusinessName" class="form-control"/>
+            </div>
+            <div class="form-group col-md-3">
+                @{
+                    var btnUpdate = $"btnUpdate_{Model[i].Id}";
+                }
+                <button type="submit" class="btn btn-primary m-2" id="@btnUpdate">Update</button>
+                <span id="loading" style="display: none;"> <i class="fas fa-spinner fa-spin"></i></span>
+
+                @*<input type="submit" value="Find Syllabus" class="btn btn-primary mr-2"  />
+                <input type="submit" value="Add new Syllabus" class="btn btn-outline-primary mr-2"  asp-action="Create"/>*@
+                @*<a class="btn btn-outline-primary" asp-action="Create" asp-route-degreeId="@Model.DegreeId" asp-route-sessionId="@Model.SessionId">Add new Syllabus</a>*@
+            </div>
+
+        </form>
+    </div>
+
+
+
 }
-    </tbody>
-</table>
+
+<!-- include jquery libraries -->
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"></script>
+}
